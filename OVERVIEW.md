@@ -59,7 +59,7 @@ The server uses `StdioServerTransport` for communication, ensuring compatibility
 const server = new Server(
   {
     name: "web-scout",
-    version: "1.5.6",
+    version: "1.5.7",
   },
   {
     capabilities: {
