@@ -25,7 +25,7 @@ export default function createServer({ config }: CreateServerOptions) {
   const server = new McpServer(
     {
       name: "web-scout",
-      version: "1.5.7"
+      version: "1.5.8"
     },
     {
       capabilities: {
@@ -87,7 +87,10 @@ class RateLimiter {
 class DuckDuckGoSearcher {
   private static readonly BASE_URL = "https://html.duckduckgo.com/html";
   private static readonly HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Referer": "https://duckduckgo.com/"
   };
 
   private rateLimiter: RateLimiter;
