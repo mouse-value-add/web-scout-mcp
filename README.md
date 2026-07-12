@@ -1,5 +1,3 @@
-[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/pinkpixel-dev-web-scout-mcp-badge.png)](https://mseep.ai/app/pinkpixel-dev-web-scout-mcp)
-
 <p align="center">
   <img src="assets/logo.png" alt="Web Scout MCP Logo" width="300"/>
 </p>
@@ -10,9 +8,12 @@
   <a href="https://github.com/pinkpixel-dev/web-scout-mcp/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
   <a href="https://nodejs.org/en/"><img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node.js Version"></a>
   <a href="https://smithery.ai/badge/@pinkpixel-dev/web-scout-mcp"><img alt="Smithery Badge" src="https://smithery.ai/badge/@pinkpixel-dev/web-scout-mcp"></a>
-  <a href="https://mseep.ai/app/f19a6453-c635-4bc8-b26a-3e9e36428a98"><img src="https://mseep.ai/badge.svg" alt="Verified on MseeP"></a>
 </p>
 
+<p align="center">
+  <a href="https://glama.ai/mcp/servers/pinkpixel-dev/web-scout-mcp"><img src="https://glama.ai/mcp/servers/pinkpixel-dev/web-scout-mcp/badges/score.svg" alt="web-scout-mcp MCP server" /></a>
+  <a href="https://mseep.ai/app/pinkpixel-dev-web-scout-mcp"><img src="https://mseep.net/pr/pinkpixel-dev-web-scout-mcp-badge.png" alt="MseeP.ai Security Assessment Badge" width="200" /></a>
+</p>
 <p align="center">
   An MCP server for web search using DuckDuckGo and content extraction, with support for multiple URLs and memory optimizations.
 </p>
