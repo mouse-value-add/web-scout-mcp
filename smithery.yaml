@@ -1,1 +1,7 @@
 runtime: "typescript"
+configSchema:
+  type: object
+  properties:
+    YDC_API_KEY:
+      type: string
+      description: "Optional You.com API key. When set, enables the YouWebSearch tool."

@@ -474,6 +474,117 @@ server.registerTool(
   },
 );
 
+// Conditionally register You.com search tool when API key is available
+const youApiKeyCandidates = [
+  config.YDC_API_KEY,
+  process.env.YDC_API_KEY,
+];
+const youApiKey = youApiKeyCandidates.find(
+  (value): value is string => typeof value === "string" && value.trim().length > 0,
+)?.trim();
+if (youApiKey) {
+  server.registerTool(
+    "YouWebSearch",
+    {
+      description:
+        "Initiates a web search query using the You.com search API and returns a well-structured list of findings. Input the keywords, question, or topic you want to search for using You.com as your query. Input the maximum number of search entries you'd like to receive using maxResults - defaults to 10 if not provided.",
+      inputSchema: {
+        query: z
+          .string()
+          .min(1, "Query is required")
+          .describe("Search query string"),
+        maxResults: z
+          .number()
+          .int()
+          .min(1)
+          .max(20)
+          .optional()
+          .describe("Maximum number of results to return (default: 10)"),
+      },
+    },
+    async (args) => {
+      try {
+        const response = await axios.post(
+          "https://api.ydcindex.io/search",
+          {
+            query: args.query,
+            num_search_results: args.maxResults ?? 10,
+          },
+          {
+            headers: {
+              "X-API-Key": youApiKey,
+              "Content-Type": "application/json",
+            },
+            timeout: 30000,
+          },
+        );
+
+        const hits = response.data?.hits;
+        if (!hits || !Array.isArray(hits) || hits.length === 0) {
+          return {
+            content: [
+              {
+                type: "text",
+                text:
+                  "No results were found for your search query. Please try rephrasing your search or try again in a few minutes.",
+              },
+            ],
+            isError: false,
+          };
+        }
+
+        const maxCount = Math.min(hits.length, args.maxResults ?? 10);
+        const output: string[] = [];
+        output.push(`Found ${maxCount} search results:\n`);
+
+        for (let i = 0; i < maxCount; i++) {
+          const hit = hits[i];
+          output.push(`${i + 1}. ${hit.title || "Untitled"}`);
+          output.push(`   URL: ${hit.url || ""}`);
+          output.push(`   Summary: ${hit.snippet || ""}`);
+          output.push("");
+        }
+
+        return {
+          content: [{ type: "text", text: output.join("\n") }],
+          isError: false,
+        };
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.code === "ECONNABORTED") {
+          return {
+            content: [
+              { type: "text", text: "Search request timed out." },
+            ],
+            isError: true,
+          };
+        }
+        const status = axios.isAxiosError(error) ? error.response?.status : null;
+        const message = axios.isAxiosError(error)
+          ? error.message
+          : (error as Error).message;
+        if (status === 401 || status === 403) {
+          return {
+            content: [
+              {
+                type: "text",
+                text:
+                  "You.com API authentication failed. Check your YDC_API_KEY. Get a key at https://you.com/platform/api-keys",
+              },
+            ],
+            isError: true,
+          };
+        }
+        return {
+          content: [
+            { type: "text", text: `Search error: ${message}` },
+          ],
+          isError: true,
+        };
+      }
+    },
+  );
+}
+
 return server.server; // Must return the MCP server object
 }
 
