@@ -505,10 +505,10 @@ if (youApiKey) {
     async (args) => {
       try {
         const response = await axios.post(
-          "https://api.ydcindex.io/search",
+          "https://ydc-index.io/v1/search",
           {
             query: args.query,
-            num_search_results: args.maxResults ?? 10,
+            count: args.maxResults ?? 10,
           },
           {
             headers: {
@@ -519,8 +519,8 @@ if (youApiKey) {
           },
         );
 
-        const hits = response.data?.hits;
-        if (!hits || !Array.isArray(hits) || hits.length === 0) {
+        const webResults = response.data?.results?.web;
+        if (!webResults || !Array.isArray(webResults) || webResults.length === 0) {
           return {
             content: [
               {
@@ -533,15 +533,16 @@ if (youApiKey) {
           };
         }
 
-        const maxCount = Math.min(hits.length, args.maxResults ?? 10);
+        const maxCount = Math.min(webResults.length, args.maxResults ?? 10);
         const output: string[] = [];
         output.push(`Found ${maxCount} search results:\n`);
 
         for (let i = 0; i < maxCount; i++) {
-          const hit = hits[i];
+          const hit = webResults[i];
+          const summary = hit.snippets?.join(" ") || hit.description || "";
           output.push(`${i + 1}. ${hit.title || "Untitled"}`);
           output.push(`   URL: ${hit.url || ""}`);
-          output.push(`   Summary: ${hit.snippet || ""}`);
+          output.push(`   Summary: ${summary}`);
           output.push("");
         }
 
