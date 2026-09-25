@@ -82,7 +82,7 @@ Add this to your MCP client's `config.json` (Claude Desktop, Cursor, etc.):
 | Variable | Description |
 |----------|-------------|
 | `WEB_SCOUT_DISABLE_AUTOSTART` | Set to `1` when embedding and calling `createServer()` yourself. By default the entrypoint auto-bootstraps stdio transport. |
-| `YDC_API_KEY` | Optional You.com API key for higher rate limits. When unset, YouWebSearch works keylessly on the free tier. Get a key at [you.com/platform/api-keys](https://you.com/platform/api-keys). |
+|| `YDC_API_KEY` | Required You.com API key for YouWebSearch. Get a key at [you.com/platform/api-keys](https://you.com/platform/api-keys). |
 
 ## 🧰 Tools
 
@@ -90,7 +90,7 @@ The server provides the following MCP tools:
 
 ### 🔍 YouWebSearch
 
-Initiates a web search query using the You.com search engine and returns a well-structured list of findings. Works keylessly on the free tier — set `YDC_API_KEY` for higher rate limits.
+Initiates a web search query using the You.com search engine and returns a well-structured list of findings. Requires the `YDC_API_KEY` environment variable. Get a key at [you.com/platform/api-keys](https://you.com/platform/api-keys).
 
 **Input:**
 - `query` (string): The search query string

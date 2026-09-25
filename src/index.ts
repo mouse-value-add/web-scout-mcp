@@ -83,10 +83,11 @@ class RateLimiter {
 
 /**
  * You.com search implementation using the You.com Search API.
- * Keyless by default — set YDC_API_KEY for higher rate limits.
+ * Requires YDC_API_KEY environment variable to be set.
+ * Get a key at https://you.com/platform/api-keys
  */
 class YouSearcher {
-  private static readonly BASE_URL = "https://api.you.com/v1/agents/search";
+  private static readonly BASE_URL = "https://api.you.com/v1/search";
 
   private rateLimiter: RateLimiter;
 
@@ -114,31 +115,33 @@ class YouSearcher {
 
   async search(query: string, ctx: Context, maxResults: number = 10): Promise<SearchResult[]> {
     try {
+      const apiKey = process.env.YDC_API_KEY;
+      if (!apiKey) {
+        await ctx.error("YDC_API_KEY is required for You.com search. Get a key at https://you.com/platform/api-keys");
+        return [];
+      }
+
       await this.rateLimiter.acquire();
 
       const headers: Record<string, string> = {
         "User-Agent": "web-scout-mcp/1.5.8 (You.com Integration)",
+        "X-API-Key": apiKey,
       };
-
-      const apiKey = process.env.YDC_API_KEY;
-      if (apiKey) {
-        headers["Authorization"] = `Bearer ${apiKey}`;
-      }
 
       const response = await axios.get(YouSearcher.BASE_URL, {
         headers,
-        params: { query, count: maxResults },
+        params: { query, num_web_results: maxResults },
         timeout: 30000,
       });
 
       const data = response.data;
       const results: SearchResult[] = [];
 
-      // Handle various You.com API response shapes
+      // You.com Search API returns web results in data.results.web
       const items: Array<Record<string, unknown>> =
+        data.results?.web ??
         data.results ??
         data.hits ??
-        data.webPages?.value ??
         [];
 
       if (!Array.isArray(items)) {
@@ -154,7 +157,10 @@ class YouSearcher {
         const link = typeof item.url === "string" ? item.url
           : typeof item.link === "string" ? item.link
           : "";
-        const snippet = typeof item.snippet === "string" ? item.snippet
+
+        // item.snippets is an array of query-relevant excerpts
+        const snippet = Array.isArray(item.snippets) && item.snippets.length > 0
+          ? String(item.snippets[0])
           : typeof item.description === "string" ? item.description
           : typeof item.text === "string" ? item.text
           : "";

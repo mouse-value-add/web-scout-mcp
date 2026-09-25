@@ -24,7 +24,7 @@
   "tools": [
     {
       "name": "YouWebSearch",
-      "description": "Initiates a web search query using the You.com search engine and returns a well-structured list of findings. You.com provides keyless web search (no API key needed) with higher rate limits available when YDC_API_KEY is set."
+      "description": "Initiates a web search query using the You.com search engine and returns a well-structured list of findings. Requires the YDC_API_KEY environment variable to be set. Get a key at https://you.com/platform/api-keys."
     },
     {
       "name": "DuckDuckGoWebSearch",
