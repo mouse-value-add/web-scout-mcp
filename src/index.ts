@@ -117,8 +117,10 @@ class YouSearcher {
     try {
       const apiKey = process.env.YDC_API_KEY;
       if (!apiKey) {
-        await ctx.error("YDC_API_KEY is required for You.com search. Get a key at https://you.com/platform/api-keys");
-        return [];
+        throw new McpError(
+          ErrorCode.InvalidParams,
+          "YDC_API_KEY is required for You.com search. Get a key at https://you.com/platform/api-keys"
+        );
       }
 
       await this.rateLimiter.acquire();
@@ -130,7 +132,7 @@ class YouSearcher {
 
       const response = await axios.get(YouSearcher.BASE_URL, {
         headers,
-        params: { query, num_web_results: maxResults },
+        params: { query, count: maxResults },
         timeout: 30000,
       });
 
@@ -178,13 +180,12 @@ class YouSearcher {
       return results;
     } catch (error) {
       if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
-        await ctx.error("You.com search request timed out");
+        throw new McpError(ErrorCode.InternalError, "You.com search request timed out");
       } else if (axios.isAxiosError(error)) {
-        await ctx.error(`You.com HTTP error: ${error.message}`);
+        throw new McpError(ErrorCode.InternalError, `You.com HTTP error: ${error.message}`);
       } else {
-        await ctx.error(`You.com search error: ${(error as Error).message}`);
+        throw new McpError(ErrorCode.InternalError, `You.com search error: ${(error as Error).message}`);
       }
-      return [];
     }
   }
 }
@@ -506,7 +507,7 @@ server.registerTool(
   "YouWebSearch",
   {
     description:
-      "Initiates a web search query using the You.com search engine and returns a well-structured list of findings. You.com provides keyless web search (no API key needed) with higher rate limits available when YDC_API_KEY is set. Input the keywords, question, or topic you want to search for as your query. Input the maximum number of search entries you'd like to receive using maxResults - defaults to 10 if not provided.",
+      "Initiates a web search query using the You.com search engine and returns a well-structured list of findings. Requires the YDC_API_KEY environment variable to be set. Get a key at https://you.com/platform/api-keys. Input the keywords, question, or topic you want to search for as your query. Input the maximum number of search entries you'd like to receive using maxResults - defaults to 10 if not provided.",
     inputSchema: {
       query: z
         .string()
@@ -532,7 +533,6 @@ server.registerTool(
 
     return {
       content: [{ type: "text", text: result }],
-      isError: false,
     };
   },
 );

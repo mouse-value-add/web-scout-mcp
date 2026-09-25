@@ -82,7 +82,7 @@ Add this to your MCP client's `config.json` (Claude Desktop, Cursor, etc.):
 | Variable | Description |
 |----------|-------------|
 | `WEB_SCOUT_DISABLE_AUTOSTART` | Set to `1` when embedding and calling `createServer()` yourself. By default the entrypoint auto-bootstraps stdio transport. |
-|| `YDC_API_KEY` | Required You.com API key for YouWebSearch. Get a key at [you.com/platform/api-keys](https://you.com/platform/api-keys). |
+| `YDC_API_KEY` | Required You.com API key for YouWebSearch. Get a key at [you.com/platform/api-keys](https://you.com/platform/api-keys). |
 
 ## 🧰 Tools
 
