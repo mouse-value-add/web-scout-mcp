@@ -79,11 +79,33 @@ Add this to your MCP client's `config.json` (Claude Desktop, Cursor, etc.):
 
 ### Environment Variables
 
-Set the `WEB_SCOUT_DISABLE_AUTOSTART=1` environment variable when embedding the package and calling `createServer()` yourself. By default running the published entrypoint (for example `node dist/index.js` or `npx @pinkpixel/web-scout-mcp`) automatically bootstraps the stdio transport.
+| Variable | Description |
+|----------|-------------|
+| `WEB_SCOUT_DISABLE_AUTOSTART` | Set to `1` when embedding and calling `createServer()` yourself. By default the entrypoint auto-bootstraps stdio transport. |
+| `YDC_API_KEY` | Optional You.com API key for higher rate limits. When unset, YouWebSearch works keylessly on the free tier. Get a key at [you.com/platform/api-keys](https://you.com/platform/api-keys). |
 
 ## 🧰 Tools
 
 The server provides the following MCP tools:
+
+### 🔍 YouWebSearch
+
+Initiates a web search query using the You.com search engine and returns a well-structured list of findings. Works keylessly on the free tier — set `YDC_API_KEY` for higher rate limits.
+
+**Input:**
+- `query` (string): The search query string
+- `maxResults` (number, optional): Maximum number of results to return (default: 10)
+
+**Example:**
+```json
+{
+  "query": "latest advancements in AI",
+  "maxResults": 5
+}
+```
+
+**Output:**
+A formatted list of search results with titles, URLs, and snippets.
 
 ### 🔍 DuckDuckGoWebSearch
 

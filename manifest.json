@@ -23,6 +23,10 @@
   },
   "tools": [
     {
+      "name": "YouWebSearch",
+      "description": "Initiates a web search query using the You.com search engine and returns a well-structured list of findings. You.com provides keyless web search (no API key needed) with higher rate limits available when YDC_API_KEY is set."
+    },
+    {
       "name": "DuckDuckGoWebSearch",
       "description": "Initiates a web search query using the DuckDuckGo search engine and returns a well-structured list of findings. Input the keywords, question, or topic you want to search for using DuckDuckGo as your query. Input the maximum number of search entries you'd like to receive using maxResults - defaults to 10 if not provided."
     },
